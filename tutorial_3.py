@@ -74,6 +74,7 @@ class HHCell:
 
 
 postCell = HHCell()
+postCell.set_recording()
 
 h.tstop = 30 # set simulation duration
 h.init()
