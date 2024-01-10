@@ -72,12 +72,29 @@ class HHCell:
             plt.show()
         return fig
 
-
 postCell = HHCell()
 postCell.set_recording()
+
+preCell1 = HHCell()
+preCell1.set_recording()
+preCell1.add_current_stim(delay=10)
+
+# connect preCell1 -> postCell to generate small EPSP (or spike)
+postSyn1 = h.ExpSyn(postCell.dend(0.5))
+postSyn1.e = 0 # excitatory synapse
+# postSyn1.e = -80 # inhibitory synapse
+postSyn1.tau = 2
+
+pre1Conn = h.NetCon(preCell1.soma(0.5)._ref_v, postSyn1, sec=preCell1.soma)
+pre1Conn.weight[0] = 0.002 # small EPSP
+# pre1Conn.weight[0] = 0.005 # triggers spike postsynaptically
+pre1Conn.delay = 1
 
 h.tstop = 30 # set simulation duration
 h.init()
 h.run()  # run simulation
 
-postCell.plot_voltage()  # plot voltage
+# preCell1.plot_voltage(show=False, title='preCell1 voltage')  # plot voltage
+postCell.plot_voltage(show=False, title='postCell voltage', ylim=(-80, 30))  # plot voltage
+
+plt.show()
